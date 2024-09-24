@@ -2,7 +2,8 @@
 namespace App\Database\Seeds;
 
 use App\Models\User;
-use App\Database\Factories\UserFactory;
+use Leaf\Helpers\Password;
+
 use Illuminate\Database\Seeder;
 
 class UsersSeeder extends Seeder
@@ -13,18 +14,14 @@ class UsersSeeder extends Seeder
      */
     public function run()
     {
-        // You can directly create db records like this 👇
-
-        // $user = new User();
-        // $user->username = 'mychi';
-        // $user->fullname = 'Mychi Darko';
-        // $user->email = 'mychi@leafphp.dev';
-        // $user->password = \Leaf\Password::hash('password');
-        // $user->save();
-
-        // You can also use factories like this 👇
-        (new UserFactory)->create(5)->save();
-
-        // even better, you can use them together :-)
+        User::create([
+            'username' => 'admin',
+            'fullname' => 'Admin User',
+            'email' => 'admin@origin.app',
+            'password' => Password::hash('password'),
+            'role' => 'admin',
+            'avatar' => '/assets/images/users/avatar.jpg',
+            'is_verified' => 1
+        ]);
     }
 }
