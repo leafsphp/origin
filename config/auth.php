@@ -44,7 +44,7 @@ return [
     | Be aware that auth uses the leafs/date module, so the accepted formats are listed in the leafs/date documentation
     |
     */
-    'TIMESTAMP_FORMAT' => 'c',
+    'TIMESTAMP_FORMAT' => 'Y-m-d H:i:s',
 
     /*
     |--------------------------------------------------------------------------
@@ -160,7 +160,7 @@ return [
     | Set to false to not redirect on login
     |
     */
-    'SESSION_REDIRECT_ON_LOGIN' => true,
+    'SESSION_REDIRECT_ON_LOGIN' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -172,7 +172,7 @@ return [
     | Set to false to not redirect on login
     |
     */
-    'SESSION_REDIRECT_ON_REGISTER' => true,
+    'SESSION_REDIRECT_ON_REGISTER' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -212,7 +212,7 @@ return [
     | Home page route
     |--------------------------------------------------------------------------
     */
-    'GUARD_HOME' => '/home',
+    'GUARD_HOME' => '/app/home',
 
     /*
     |--------------------------------------------------------------------------
@@ -232,7 +232,7 @@ return [
     | Secret string to encode JWT
     |
     */
-    'TOKEN_SECRET' => '@_leaf$0Secret!',
+    'TOKEN_SECRET' => getenv('APP_KEY'),
 
     /*
     |--------------------------------------------------------------------------
