@@ -27,6 +27,9 @@ return [
     'SECRET' => getenv('APP_KEY'),
     'METHODS' => ['POST', 'PUT', 'PATCH', 'DELETE'],
     'EXCEPT' => [
-        // ... route list
+        'api/{wild}',
+        'hook/{wild}',
+
+        # ... add more routes to exclude from CSRF protection
     ]
 ];
