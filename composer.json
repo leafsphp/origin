@@ -1,23 +1,11 @@
 {
-    "name": "leafs/mvc",
-    "version": "3.5.0",
-    "description": "A lightweight PHP MVC framework powered by Leaf",
-    "type": "library",
-    "keywords": [
-        "framework",
-        "leaf",
-        "leafPHP",
-        "mvc",
-        "leaf mvc"
-    ],
+    "name": "leafs/origin",
+    "version": "0.0.1",
+    "description": "A simple and minimal starter kit for Leaf PHP",
+    "type": "project",
+    "keywords": [ "php", "origin", "leaf", "leafs", "starter", "kit", "simple", "minimal" ],
     "license": "MIT",
     "authors": [
-        {
-            "name": "Michael Darko",
-            "email": "mickdd22@gmail.com",
-            "homepage": "https://mychi.netlify.app",
-            "role": "Maintainer"
-        },
         {
             "name": "Abdulbasit Rubeya",
             "email": "abdulbasitsultan4@gmail.com",
@@ -35,7 +23,9 @@
         "leafs/cors": "*",
         "leafs/auth": "*",
         "leafs/db": "*",
-        "leafs/vite": "*"
+        "leafs/vite": "*",
+        "leafs/csrf": "^0.4.2",
+        "nette/mail": "^4.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.16"
