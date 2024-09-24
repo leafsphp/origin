@@ -64,12 +64,8 @@ body[data-layout=horizontal] .navbar-custom {
 
 body[data-layout=horizontal] .navbar-custom {
 	padding: 0 10px;
-	background: linear-gradient(5deg, #ffffff, 83%, #ffaa8f50);
+	background: linear-gradient(211deg, #ffffff, 95%, transparent);
 	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-}
-
-#topnav {
-	background: unset !important;
 }
 
 #topnav .has-submenu.active>a {
