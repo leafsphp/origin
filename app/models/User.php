@@ -4,33 +4,19 @@ namespace App\Models;
 
 class User extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     * @var array
-     */
-    protected $fillable = [
-        'fullname', 'email', 'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
-
-    /**
-     * Indicates if the model should be timestamped.
-     * @var bool
-     */
+    protected $table = "users";
+    protected $fillable = ["username", "fullname", "email", "email_verified", "password", "remember_token", "status", "role", "avatar"];
+    protected $hidden = ["password", "remember_token"];
+    protected $with = ["role"];
     public $timestamps = true;
-
-    /**
-     * The attributes that should be cast to native types.
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
+    public $casts = [
+        "created_at" => "datetime",
+        "updated_at" => "datetime"
     ];
+
+    # belongs to user role
+    public function role()
+    {
+        return $this->belongsTo(UserRole::class, "role");
+    }
 }
