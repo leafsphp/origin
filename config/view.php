@@ -21,7 +21,38 @@ return [
     |
     */
     'config' => function ($config) {
-        \Leaf\Config::get('views.blade')->configure($config['views'], $config['cache']);
+        $blade = \Leaf\Config::get('views.blade')->configure($config['views'], $config['cache']);
+
+        $blade->addExtension('blade.js', 'blade');
+
+        # Route directive
+        $blade->compiler()->directive('route', function ($expression) {
+            return "<?php echo route($expression); ?>";
+        });
+
+        # Script directive
+        $blade->compiler()->directive('script', function ($expression, $type = 'module') {
+            
+            $expression = trim($expression, "()'\"");
+
+            $scriptTag = "<script>" . PHP_EOL;
+            if($type == 'module')
+                $scriptTag = "<script type=\'module\'>" . PHP_EOL;
+
+            return <<<HTML
+            <?php
+                \$view = str_replace('.', '/', '$expression');
+                \$filePath = trim(ViewsPath(\$view . '.blade.js'), '//');
+                if (file_exists(\$filePath)) {
+                    \$__env->startPush('scripts');
+                    echo '$scriptTag';
+                    echo \$__env->make('$expression', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render() . PHP_EOL;
+                    echo chr(60) . "/script" . chr(62);
+                    \$__env->stopPush();
+                }
+            ?>
+            HTML;
+        });
     },
 
     /*
