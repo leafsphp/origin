@@ -1,3 +1,6 @@
+Not Ready for Production Use
+---
+
 # Origin: Minimal Leaf Starter Kit
 
 A minimal starter kit for Leaf PHP, inspired by Laravel Breeze. This kit provides essential scaffolding for authentication, built with **Blade**, **Bootstrap**, and yes... **jQuery**. 😉
