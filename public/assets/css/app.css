@@ -1,0 +1,171 @@
+/*
+ * This file can be used for general application layout
+ * styles. If you do not want to use this, remove it from
+ * the list of stylesheets in the config file.
+ *
+ * Note: This file is unrelated the other files with
+ * the same name in the assets/css directory.
+ *   i.e app.min.css, app-dark.min.css, app-rtl.min.css
+ *
+ * In here you can write your own styles or use the
+ * included styles to build your application layout.
+ *
+ */
+* {
+	font-family: "Public Sans", sans-serif;
+	font-weight: 400;
+}
+
+body[data-layout=horizontal] .navbar-custom {
+	padding: 0 10px;
+	background: #152533;
+}
+
+.card{
+	border: none;
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+	background: #ffffff80;
+}
+
+.card-header, .card-footer {
+	background: #00000000;
+}
+
+.content {
+	min-height: calc(100vh - 70px) !important;
+	background: url('/assets/images/vector/gbg.jpg') center center; background-size: cover;
+}
+
+.profile-overview-menu {
+	border-bottom: 1px solid #e9ecef10;
+	padding: 0 1rem;
+}
+
+.profile-overview-menu:last-child {
+	border-bottom: none;
+}
+
+.profile-overview-menu:hover {
+	background: #15253314;
+}
+
+.profile-overview-menu.active {
+	background: #15253314;
+}
+
+.btn-form{
+	width: 100%;
+	max-width: 300px;
+}
+
+.content-page .content .container-fluid {
+	padding-top: 1rem;
+}
+
+body[data-layout=horizontal] .navbar-custom {
+	padding: 0 10px;
+	background: linear-gradient(5deg, #ffffff, 83%, #ffaa8f50);
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+#topnav {
+	background: unset !important;
+}
+
+#topnav .has-submenu.active>a {
+	color: #757575 !important;
+	font-weight: 700;
+}
+
+#topnav .navbar-toggle span {
+	background-color: #757575;
+}
+
+.navigation-menu>li>a {
+	color: #757575;
+	font-weight: 400;
+}
+
+body[data-layout=horizontal] .navbar-custom .topnav-menu .nav-link {
+	color: #a1a1a1;
+	font-weight: 400;
+}
+
+.ph-spin {
+  display: inline-block;
+  animation: ph-spin 1s infinite linear;
+}
+
+@keyframes ph-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.inline-switch {
+	display: inline;
+  position: absolute;
+  right: 1rem;
+}
+
+/* Mobile and Small Screen */
+@media (max-width: 767px) {
+
+	.profile-menu-card{
+		height: unset !important;
+	}
+
+	.profile-overview-menus {
+		display: flex;
+		justify-content: space-between;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		overflow-x: auto;
+	}
+
+	.profile-overview-menu{
+		display: inline-block;
+		list-style-type: none;
+		flex: 1 1 auto;
+		border-right: 1px solid #e9ecef10;
+		border-radius: 10px 10px 0 0;
+		margin: 0 1px;
+		text-align: center;
+	}
+
+	.profile-overview-menu:first-child {
+		border-radius: 0 10px 0 0;
+		margin: 0;
+	}
+
+	.profile-overview-menu:last-child {
+		border-right: none;
+		border-radius: 10px 0 0 0;
+		margin: 0;
+	}
+
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+	height: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
