@@ -28,6 +28,18 @@
 // 	response()->page(ViewsPath("errors/500.html", false), 500);
 // });
 
+
+/*
+|--------------------------------------------------------------------------
+| Load the Auth middleware
+|--------------------------------------------------------------------------
+|
+| This loads the auth middleware. The auth middleware is used to
+| protect routes from unauthenticated users.
+|
+*/
+\App\Middleware\Auth::load();
+
 /*
 |--------------------------------------------------------------------------
 | Set up Controller namespace
@@ -37,6 +49,7 @@
 | the controller namespace first.
 |
 */
+
 app()->setNamespace('\App\Controllers');
 
 /*
