@@ -1,9 +1,7 @@
 @extends('layouts.mail')
 @section('content')
 
-	<!--span class="preheader">This is preheader text. Some clients will show this text as a preview.</span-->
 	<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="main">
-		<!-- START MAIN CONTENT AREA -->
 		<tr>
 			<td style="text-align:center; padding-top:1rem;"> 
                 <img width="200" src="/assets/images/logo-dark.png" alt="Logo">
@@ -24,7 +22,6 @@
 				<p>Good luck! Hope it works.</p>
 			</td>
 		</tr>
-		<!-- END MAIN CONTENT AREA -->
 	</table>				
 
 @endsection
