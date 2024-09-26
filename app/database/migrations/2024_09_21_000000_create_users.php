@@ -24,6 +24,8 @@ class CreateUsers extends Database
                 $table->string('status')->default('active');
                 $table->string('role')->default('user');
                 $table->string('avatar')->nullable();
+                $table->string('two_fa')->default(0);
+                $table->string('notify_login')->default(0);
                 $table->timestamp('created_at')->useCurrent();
                 $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
          	});
