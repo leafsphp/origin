@@ -1505,16 +1505,16 @@
         },
         {
             "name": "leafs/blade",
-            "version": "v3.0",
+            "version": "v3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/leafsphp/blade.git",
-                "reference": "9a630876f29dc4c3355199c19ca6e2575f1fdfc0"
+                "reference": "b4a3a5f68af6490bc70b9bb8f6fabbcd1246e732"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/leafsphp/blade/zipball/9a630876f29dc4c3355199c19ca6e2575f1fdfc0",
-                "reference": "9a630876f29dc4c3355199c19ca6e2575f1fdfc0",
+                "url": "https://api.github.com/repos/leafsphp/blade/zipball/b4a3a5f68af6490bc70b9bb8f6fabbcd1246e732",
+                "reference": "b4a3a5f68af6490bc70b9bb8f6fabbcd1246e732",
                 "shasum": ""
             },
             "require": {
@@ -1551,7 +1551,7 @@
             ],
             "support": {
                 "issues": "https://github.com/leafsphp/blade/issues",
-                "source": "https://github.com/leafsphp/blade/tree/v3.0"
+                "source": "https://github.com/leafsphp/blade/tree/v3.1"
             },
             "funding": [
                 {
@@ -1563,7 +1563,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-08-17T04:39:41+00:00"
+            "time": "2024-09-23T22:23:29+00:00"
         },
         {
             "name": "leafs/cors",
