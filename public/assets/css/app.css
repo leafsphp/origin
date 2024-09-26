@@ -64,8 +64,12 @@ body[data-layout=horizontal] .navbar-custom {
 
 body[data-layout=horizontal] .navbar-custom {
 	padding: 0 10px;
-	background: linear-gradient(211deg, #ffffff, 95%, transparent);
+	background: linear-gradient(5deg, #ffffff, 83%, #ffaa8f50);
 	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+#topnav {
+	background: unset !important;
 }
 
 #topnav .has-submenu.active>a {
@@ -105,6 +109,10 @@ body[data-layout=horizontal] .navbar-custom .topnav-menu .nav-link {
 	display: inline;
   position: absolute;
   right: 1rem;
+}
+
+.navigation-menu>li:hover a {
+	color: #000000 !important;
 }
 
 /* Mobile and Small Screen */
