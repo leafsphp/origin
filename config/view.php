@@ -21,7 +21,7 @@ return [
     |
     */
     'config' => function ($config) {
-        \Leaf\Config::get('views.blade')->configure($config['views'], $config['cache']);
+        // return \Leaf\Config::get('views.blade')->configure($config['views'], $config['cache']);     
     },
 
     /*
