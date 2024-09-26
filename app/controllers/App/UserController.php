@@ -37,7 +37,7 @@ class UserController extends Controller
 
         # Handle avatar upload
         if ($avatar && $avatar['size']) {
-            
+
             $avatar = request()->uploadAs('avatar', StoragePath('app/public/avatars'), uniqid(),
                 ['extensions' => ['jpg', 'jpeg', 'png']]
             );
@@ -92,6 +92,33 @@ class UserController extends Controller
         }
 
         return $this->jsonError("Password update failed");
+    }
+
+    public function updateSecurity(){
+        $request = request()->validate([
+            'password' => 'required',
+        ]);
+
+        if (!$request) 
+            return $this->jsonError("Please provide your password");
+
+
+        $twoFa = request()->params('2fa', false) ? 1 : 0;
+        $notifyLogin = request()->params('loging', false) ? 1 : 0;
+
+        $user = User::find(auth()->id());
+
+        if(!$user) return $this->jsonError("Invalid Request");
+
+        if(Password::verify($request['password'], $user->password)){
+            $user->two_fa = $twoFa;
+            $user->notify_signin = $notifyLogin;
+            $user->save();
+
+            return $this->jsonSuccess("Security settings updated successfully");
+        }else{
+            return $this->jsonError("Invalid password provided");
+        }
     }
 
     # Utility functions
