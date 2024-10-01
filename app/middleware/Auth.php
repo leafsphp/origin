@@ -13,11 +13,13 @@ class Auth
     protected static $home;
     protected static $login;
 
+    protected static $routes;
+
     public static function load(): bool
     {
         self::initialize();
-        $rules = self::getExpressionRules();
-        self::webRequestAccess($rules);
+        self::webRequestAccess(self::getExpressionRules());
+
         return true;
     }
 
@@ -27,6 +29,12 @@ class Auth
 
         self::$home = AuthConfig('GUARD_HOME');
         self::$login = AuthConfig('GUARD_LOGIN');
+
+        self::$routes = [
+            '2fa' => AuthConfig('GUARD_2FA'),
+            'verify' => AuthConfig('GUARD_VERIFY'),
+            'logout' => AuthConfig('GUARD_LOGOUT')
+        ];
         
         self::$uri = ltrim($_SERVER['REQUEST_URI'], '/');
         self::$uriRules = require_once RoutesPath('guard.php');
@@ -60,11 +68,17 @@ class Auth
             exit(header("Location: " . self::$login));
         }
 
-        // page guest access but user is logged in
+        # user logged but not 2fa passed
+        if(self::$user && !isset(self::$user['session_id']) && !in_array('/'.self::$uri, self::$routes)){
+            exit(header("Location: " . self::$routes['2fa']));
+        }
+
+        # pages for guest access but user is logged in
         if ($rules['access'] === 'guest' && self::$user) {
             exit(header("Location: " . self::$home));
         }
 
+        # pages for logged in users only
         if (is_array($rules['access'])) {
             if (self::$user && !in_array(self::$user['role'], $rules['access'])) {
                 exit(header("Location: " . self::$home));
