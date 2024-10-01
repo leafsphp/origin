@@ -14,9 +14,7 @@ class Controller extends \Leaf\Controller
     public function __construct()
     {
         parent::__construct();
-
         $this->setupLogedUser();
-
     }
 
     public function __set($name, $value)
@@ -27,10 +25,9 @@ class Controller extends \Leaf\Controller
     public function setupLogedUser()
     {
         if(auth()->id()){
-            $this->loggedUser = auth()->user();
-            unset($this->loggedUser['password']);
+            $this->data['loggedUser'] = auth()->user();
+            unset($this->data['loggedUser']['password']);
         }
-    
     }
 
     protected function renderPage($title, $view, $data = [])
@@ -78,6 +75,7 @@ class Controller extends \Leaf\Controller
                 'file' => $e->getFile()
             ];
         }
+
         return response()->json($this->data);
     }
 }
