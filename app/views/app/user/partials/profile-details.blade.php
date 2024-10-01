@@ -3,7 +3,7 @@
     <p class="text-muted">Update your account details.</p>
     <hr>
 
-    <form action="{{ route('app.profile.update') }}" id="profileForm" onsubmit="updateProfile(event)">
+    <form action="{{ route('app.profile.update') }}" id="profileForm" onsubmit="submitForm(event)">
         @csrf
         <div class="form-group">
             <label for="username" class="form-label">Username</label>
@@ -27,32 +27,3 @@
         </div>
     </form>                                        
 </div>
-
-<script>
-    function updateProfile(event) {
-        event.preventDefault();
-        var form = $('#profileForm');
-        buttonState('#btnUpdateProfile', 'loading');
-
-        $.ajax({
-            url: form.attr('action'),
-            method: 'POST',
-            data: new FormData(form[0]),
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                if (response.status) {
-                    toast.success({ message: response.message });
-                } else {
-                    toast.error({ message: response.message });
-                }
-            },
-            error: function() {
-                toast.error({ message: 'Unknown Error Occurred' });
-            },
-            complete: function() {
-                buttonState('#btnUpdateProfile', 'reset', 'Update Profile');
-            }
-        });
-    }
-</script>

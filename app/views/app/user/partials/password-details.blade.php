@@ -3,7 +3,7 @@
     <p class="text-muted">Update your account password.</p>
     <hr>
 
-    <form action="{{ route('app.password.update') }}" id="securityForm" onsubmit="updatePassword(event)">
+    <form action="{{ route('app.password.update') }}" id="passwordForm" onsubmit="updatePassword(event)">
         @csrf
         <div class="form-group">
             <label for="currentPassword" class="form-label">Current Password</label>
@@ -22,45 +22,3 @@
         </div>
     </form>
 </div>
-
-<script>
-
-    function updatePassword(event) {
-        event.preventDefault();
-        var form = $('#securityForm');
-
-        // validate form
-        if (form.find('input[name="new_password"]').val() != form.find('input[name="confirm_password"]').val()) {
-            toast.error({ message: 'New Password and Confirm Password do not match' });
-            return;
-        }
-
-        // password length
-        if (form.find('input[name="new_password"]').val().length < 6) {
-            toast.error({ message: 'Password must be at least 6 characters' });
-            return;
-        }
-
-        buttonState('#btnUpdatePassword', 'loading');
-
-        $.ajax({
-            url: form.attr('action'),
-            method: 'POST',
-            data: form.serialize(),
-            success: function(response) {
-                if (response.status) {
-                    toast.success({ message: response.message });
-                } else {
-                    toast.error({ message: response.message });
-                }
-            },
-            error: function() {
-                toast.error({ message: 'Unknown Error Occurred' });
-            },
-            complete: function() {
-                buttonState('#btnUpdatePassword', 'reset', 'Update Password');
-            }
-        });
-    }
-
-</script>

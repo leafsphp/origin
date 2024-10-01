@@ -5,40 +5,43 @@
 
     <!-- warning: under development -->
     <div class="alert alert-warning" role="alert">
-        <strong>Under Development!</strong> This feature is currently under development, and won't be available anytime soon.
+        <strong>For any security changes, password is required.</strong>
     </div>
 
-    <!-- 2FA -->
-    <div class="form-group mt-3">
-        <label for="2fa" class="form-label">2F Authentication</label>
-        <div class="custom-control custom-switch inline-switch">
-            <input type="checkbox" class="custom-control-input" id="2fa">
-            <label class="custom-control-label" for="2fa"></label>
+    <form action="{{ route('app.security.update') }}" method="POST" id="securityForm" onsubmit="submitForm(event)">
+
+        @csrf
+
+        <!-- password -->
+        <div class="form-group">
+            <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password" required>
         </div>
-    </div>
 
-    <!-- 2fa code -->
-    <div class="form-group mt-3 d-none">
-        <label for="2faCode" class="form-label">2FA Code</label>
-        <input type="text" class="form-control" id="2faCode" placeholder="Enter 2FA Code">
-    </div>
-
-    <!-- password expiration -->
-    <div class="form-group mt-3">
-        <label for="passwordExpiration" class="form-label">Password Expiration</label>
-        <div class="custom-control custom-switch inline-switch">
-            <input type="checkbox" class="custom-control-input" id="passwordExpiration">
-            <label class="custom-control-label" for="passwordExpiration"></label>
+        <div class="form-group border-bottom">
+            <label class="form-label"> Security Options</label>
         </div>
-    </div>
 
-    <!-- email notifications -->
-    <div class="form-group mt-3">
-        <label for="emailNotifications" class="form-label">Email Notifications</label>
-        <div class="custom-control custom-switch inline-switch">
-            <input type="checkbox" class="custom-control-input" id="emailNotifications">
-            <label class="custom-control-label" for="emailNotifications"></label>
+        <!-- 2FA -->
+        <div class="form-group mt-3">
+            <label for="2fa" class="form-label">2F Authentication</label>
+            <div class="custom-control custom-switch inline-switch">
+                <input name="2fa" type="checkbox" class="custom-control-input" id="2fa">
+                <label class="custom-control-label" for="2fa"></label>
+            </div>
         </div>
-    </div>
 
+        <!-- email notifications -->
+        <div class="form-group mt-3">
+            <label for="emailNotifications" class="form-label">Email Notifications</label>
+            <div class="custom-control custom-switch inline-switch">
+                <input name="loging" type="checkbox" class="custom-control-input" id="emailNotifications">
+                <label class="custom-control-label" for="emailNotifications"></label>
+            </div>
+        </div>
+
+        <!-- button -->
+        <div class="form-group text-center pt-3">
+            <button class="btn btn-primary btn-form" id="btnUpdateSecurity" type="submit">Update Security</button>
+        </div>
+    </form>
 </div>
