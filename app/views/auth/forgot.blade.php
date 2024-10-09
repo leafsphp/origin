@@ -50,12 +50,7 @@
                 method: 'POST',
                 data: form.serialize(),
                 success: function(response) {
-                    if (response.status) {
-                        toast.success({ message: response.message });
-                        $('.alert').removeClass('d-none');
-                    }else{
-                        toast.error({ message: response.message });
-                    }
+                    
                 },
                 error: function(xhr) {
                     toast.error({ message: 'Unknown Error Occurred' });
