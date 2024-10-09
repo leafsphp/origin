@@ -69,7 +69,7 @@ class Auth
         }
 
         # user logged but not 2fa passed
-        if(self::$user && !isset(self::$user['session_id']) && !in_array('/'.self::$uri, self::$routes)){
+        if(self::$user && !session()->has('session_id') && !in_array('/'.self::$uri, self::$routes)){
             exit(header("Location: " . self::$routes['2fa']));
         }
 
