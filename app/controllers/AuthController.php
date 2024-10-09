@@ -3,9 +3,11 @@
 namespace App\Controllers;
 
 use App\Models\User;
-use App\Controllers\Controller;
+use App\Models\UserToken;
+
 use App\Helpers\MailTool;
 use Leaf\Helpers\Password;
+use App\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -21,6 +23,9 @@ class AuthController extends Controller
 
     public function register()
     {
+        if(!AuthConfig('ALLOW_REGISTRATION'))
+            return response()->redirect(route('login'));
+
         return $this->renderPage('Register', 'auth.register');
     }
 
@@ -41,11 +46,42 @@ class AuthController extends Controller
             'password' => request()->get('password')
         ]);
 
-        return $this->jsonResponse($data, "Welcome, Login successful", "Invalid login details", route('app.home'));
+        if($data){
+
+            if(!$data['user']['email_verified'] && AuthConfig('ENFORCE_VERIFY_EMAIL')){
+                auth()->logout();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Please verify your email address',
+                    'redirect' => route('login')
+                ]);
+            }
+
+            if(!$data['user']['two_fa']):
+                session()->set('session_id', md5(uniqid().time().$data['user']['id']));
+
+                else:
+                    $this->sendTwoFaToken();
+                    $redirect = route('2fa');
+            endif;
+
+            if($data['user']['notify_signin']){
+                (new MailTool())->sendHtml('New Signin', view('mails.signin', [
+                    'name' => $data['user']['fullname'],
+                    # TODO: 'ip' => request()->ip(),
+                    # TODO: 'location' => request()->location()
+                ]), $data['user']['email'], $data['user']['fullname']);
+            }
+        }
+
+        return $this->jsonResponse($data, "Welcome, Login successful", "Invalid login details", $redirect ?? route('app.home'));
     }
 
     public function signup()
     {
+        if(!AuthConfig('ALLOW_REGISTRATION'))
+            return response()->redirect(route('login'));
+
         $request = request()->validate([
             'email' => 'required|email',
             'name' => 'required',
@@ -66,9 +102,105 @@ class AuthController extends Controller
             'password' => Password::hash($request['password'])
         ]);
 
+        if(AuthConfig('VERIFY_EMAIL') && $data){
+            $verificationToken = Password::hash(uniqid() . time());
+
+            UserToken::create([
+                'user_id' => $data->id,
+                'token' => $verificationToken,
+                'type' => 'verify'
+            ]);
+
+            (new MailTool())->sendHtml('Email Verification', view('mails.verify', [
+                'name' => $data->fullname,
+                'token' => base64_encode($verificationToken)
+            ]), $data->email, $data->fullname);
+        }
+
         return $this->jsonResponse($data, "Registration successful", "Registration failed", route('login'));
     }
 
+    public function twoFactor()
+    {
+        if(!auth()->id() || session()->has('session_id')) $x = 1;
+            //return response()->redirect(route('login'));
+
+        // get the last 2fa token
+        $token = UserToken::where('user_id', auth()->id())->where('type', '2fa')->first();
+        $this->timer = $token ? 300 - (time() - strtotime($token->created_at)) : 0;
+        
+        return $this->renderPage('Two Factor Authentication', 'auth.2fa');
+    }
+
+    public function twoFactorSubmit()
+    {
+        $request = request()->validate(['code' => 'required']);
+
+        if (!$request) {
+            return $this->jsonError("Invalid 2FA code");
+        }
+
+        $user = User::find(auth()->id());
+        if(!$user) return $this->jsonError("Invalid user session");
+
+        # fetch 2fa token of type 2fa, resend if not found
+        $token = UserToken::where('user_id', $user->id)->where('type', '2fa')->first();
+        if(!$token || (time() - strtotime($token->created_at)) > 300){
+            $this->sendTwoFaToken();
+            return $this->jsonError("2FA code expired, new code sent to your email");
+        }
+
+        if(!Password::verify($request['code'], $token->token)){
+            return $this->jsonError("Invalid 2FA code");
+        }
+
+        // delete 2fa token
+        UserToken::where('token', $token->token)->delete();
+        session()->set('session_id', md5(uniqid().time().$user->id));
+
+        $this->redirect = route('app.home');
+        return $this->jsonSuccess("2FA successful");
+    }
+
+    public function resendTwoFaToken()
+    {
+        try{
+            // get the last 2fa token
+            $token = UserToken::where('user_id', auth()->id())->where('type', '2fa')->first();
+            $timer = $token ? 300 - (time() - strtotime($token->created_at)) : 0;
+
+            if($timer > 0){
+                return $this->jsonError("You can only resend 2FA after the current one expires");
+            }
+
+            //$this->sendTwoFaToken();
+            $this->timer = 300;
+            return $this->jsonSuccess("A new 2FA code sent to your email");
+        }
+
+        catch(\Exception $e){
+            return $this->jsonException($e);
+        }
+    }
+
+    private function sendTwoFaToken()
+    {
+        $user = auth()->user();
+        $token = strtoupper(bin2hex(random_bytes(3)));
+
+        UserToken::where('user_id', auth()->id())->where('type', '2fa')->delete();
+
+        UserToken::create([
+            'user_id' => auth()->id(),
+            'token' => Password::hash($token),
+            'type' => '2fa'
+        ]);
+
+        (new MailTool())->sendHtml('2FA Code', view('mails.2fa', [
+            'name' => $user['fullname'],
+            'token' => $token
+        ]), $user['email'], $user['fullname']);
+    }
 
     public function reset()
     {
@@ -102,6 +234,21 @@ class AuthController extends Controller
         }
     }
 
+    public function verify()
+    {
+        $token = request()->get('token');
+        $tokenValidation = $this->validateToken($token, 'verify');
+
+        if (!$tokenValidation['status']) {
+            return response()->markup(view('errors.400'), 400);
+        }
+
+        $user = UserToken::where('token', $token)->first()->user;
+        $user->email_verified = 1;
+        $user->save();
+
+        return $this->renderPage('Email Verified', 'auth.verified');
+    }
 
     public function password($token)
     {
@@ -142,17 +289,38 @@ class AuthController extends Controller
         return (time() - strtotime($user->updated_at)) > 7200;
     }
 
+    private function validateToken($token, $type)
+    {
+        $userToken = UserToken::where('token', $token)->where('type', $type)->first();
+
+        if (!$userToken) {
+            return ['status' => false, 'message' => 'Invalid Token'];
+        }
+
+        if ((time() - strtotime($userToken->created_at)) > 7200) {
+            return ['status' => false, 'message' => 'Token Has Expired'];
+        }
+
+        return ['status' => true, 'message' => null];
+    }
+
     public static function routes()
     {
-        app()->get('login', ['name' => 'login', 'AuthController@login']);
-        app()->get('reset', ['name' => 'reset', 'AuthController@forgot']);
-        app()->get('logout', ['name' => 'logout', 'AuthController@logout']);
-        app()->get('register', ['name' => 'register', 'AuthController@register']);
-        app()->get('password/{token}', ['name' => 'password', 'AuthController@password']);
+        app()->get('/login', ['name' => 'login', 'AuthController@login']);
+        app()->get('/reset', ['name' => 'reset', 'AuthController@forgot']);
+        app()->get('/logout', ['name' => 'logout', 'AuthController@logout']);
+        app()->get('/register', ['name' => 'register', 'AuthController@register']);
+        app()->get('/password/{token}', ['name' => 'password', 'AuthController@password']);
 
-        app()->post('login', ['name' => 'signin', 'AuthController@signin']);
-        app()->post('register', ['name' => 'signup', 'AuthController@signup']);
-        app()->post('reset', ['name' => 'reset', 'AuthController@reset']);
-        app()->post('password', ['name' => 'update.password', 'AuthController@updatePassword']);
+        app()->post('/login', ['name' => 'signin', 'AuthController@signin']);
+        app()->post('/register', ['name' => 'signup', 'AuthController@signup']);
+        app()->post('/reset', ['name' => 'reset', 'AuthController@reset']);
+        app()->post('/password', ['name' => 'update.password', 'AuthController@updatePassword']);
+
+        app()->get('/2fa', ['name' => '2fa', 'AuthController@twoFactor']);
+        app()->post('/2fa', ['name' => '2fa', 'AuthController@twoFactorSubmit']);
+        app()->get('/2fa/resend', ['name' => '2fa.resend', 'AuthController@resendTwoFaToken']);
+
+        app()->get('/verify-email', ['name' => 'verify', 'AuthController@verify']);
     }
 }
