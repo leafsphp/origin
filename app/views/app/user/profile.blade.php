@@ -37,20 +37,4 @@
         </div>
     </div>
 @endsection
-@push('scripts')
-    <script>
-        $('.profile-overview-switch').click(function() {
-
-            var targetBlock = $(this).data('target-block');
-            $('.profile-overview-menu').removeClass('active');
-            $(this).addClass('active');
-
-            $('.profile-overview-tab').addClass('d-none');
-            $('#profileDetails, #securityDetails').addClass('d-none');
-            $(targetBlock).removeClass('d-none');
-
-        });
-
-        
-    </script>
-@endpush
+@script('app.user.scripts.profile')
