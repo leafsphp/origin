@@ -99,13 +99,14 @@ function submitForm(event, responseHandler = null){
             }else{
                 if (response.status) {
                     toast.success({ message: response.message });
-                    if(response.redirect){
-                        setTimeout(() => {
-                            window.location.href = response.redirect;
-                        }, 1000);
-                    }
                 }else{
                     toast.error({ message: response.message });
+                }
+
+                if(response.redirect){
+                    setTimeout(() => {
+                        window.location.href = response.redirect;
+                    }, 1000);
                 }
             }
         },
