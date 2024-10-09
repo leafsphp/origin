@@ -1,6 +1,5 @@
 {
     "name": "leafs/origin",
-    "version": "0.0.1",
     "description": "A simple and minimal starter kit for Leaf PHP",
     "type": "project",
     "keywords": [ "php", "origin", "leaf", "leafs", "starter", "kit", "simple", "minimal" ],
