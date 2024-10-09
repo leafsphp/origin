@@ -22,5 +22,4 @@ Origin is perfect for developers who want a quick start with Leaf PHP without al
 
 ## Credits
 
-- [Leaf PHP](https://leafphp.dev)
 - Logo Icon made by [Jeremiah Foster](https://www.jeremiahfoster.com/)
