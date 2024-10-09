@@ -24,7 +24,7 @@
         "leafs/auth": "*",
         "leafs/db": "*",
         "leafs/vite": "*",
-        "leafs/csrf": "^0.4.2",
+        "leafs/csrf": "^0.5.1",
         "nette/mail": "^4.0"
     },
     "require-dev": {
