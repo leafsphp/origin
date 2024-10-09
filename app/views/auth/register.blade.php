@@ -8,7 +8,7 @@
                 </a>
             </div>
 
-            <form action="{{ route('signup') }}" id="registerForm" class="p-2">
+            <form action="{{ route('signup') }}" id="registerForm" class="p-2" onsubmit="submitForm(event)">
                 @csrf
                 <div class="form-group">
                     <label for="fullname">Full Name</label>
@@ -42,33 +42,4 @@
         </div>
     </div>
 @endsection
-@push('scripts')
-    <script>
-        $('#registerForm').submit(function(e) {
-            e.preventDefault();
-            var form = $(this);
-            buttonState('#btnRegister', 'loading');
-
-            $.ajax({
-                url: form.attr('action'),
-                method: 'POST',
-                data: form.serialize(),
-                success: function(response) {
-                    if (response.status) {
-                        toast.success({ message: response.message });
-                        setTimeout(() => {
-                            window.location.href = response.redirect;
-                        }, 1000);
-                    } else {
-                        toast.error({ message: response.message });
-                        buttonState('#btnRegister', 'reset');
-                    }
-                },
-                error: function() {
-                    toast.error({ message: 'An error occurred. Please try again later.' });
-                    buttonState('#btnRegister', 'reset', 'Sign Up');
-                }
-            });
-        });
-    </script>
-@endpush
+@script('auth.scripts.auth')
