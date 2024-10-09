@@ -8,7 +8,7 @@
                 </a>
             </div>
 
-            <form action="{{ route('signin') }}" id="loginForm" class="p-2">
+            <form action="{{ route('signin') }}" id="loginForm" class="p-2" onsubmit="submitForm(event)">
                 @csrf
                 <div class="form-group">
                     <label for="emailaddress">Email Address</label>
@@ -30,47 +30,18 @@
                 </div>
             </form>
             
-            <div class="row mt-2">
-                <div class="col-sm-12 text-center">
-                    <p class="text-muted mb-0">
-                        Don't have an account?
-                        <a class="fw-bold" href="{{ route('register') }}" class="text-dark ml-1">Sign Up</a>
-                    </p>
+            @if(AuthConfig('ALLOW_REGISTRATION'))
+                <div class="row mt-2">
+                    <div class="col-sm-12 text-center">
+                        <p class="text-muted mb-0">
+                            Don't have an account?
+                            <a class="fw-bold" href="{{ route('register') }}" class="text-dark ml-1">Sign Up</a>
+                        </p>
+                    </div>
                 </div>
-            </div>
+            @endif
         
         </div>
     </div>
 @endsection
-@push('scripts')
-    <script>
-        $('#loginForm').submit(function(e) {
-            e.preventDefault();
-            var form = $(this);
-            buttonState('#btnLogin', 'loading');
-
-            $.ajax({
-                url: form.attr('action'),
-                method: 'POST',
-                data: form.serialize(),
-                success: function(response) {
-                    if (response.status) {
-                        toast.success({ message: response.message });
-                        setTimeout(() => {
-                            window.location.href = response.redirect;
-                        }, 1000);
-                    }else{
-                        toast.error({ message: response.message });
-                    }
-                },
-                error: function(xhr) {
-                    toast.error({ message: 'Unknown Error Occurred' });
-                },
-                complete: function() {
-                    buttonState('#btnLogin', 'reset', 'Sign In');
-                }   
-            });
-            
-        });
-    </script>
-@endpush
+@script('auth.scripts.auth')
