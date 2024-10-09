@@ -32,7 +32,11 @@
                 bottom: .7rem;
                 cursor: pointer;
             }
-
+            
+            .card{
+                border: unset;
+                box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+            }
         </style>
     </head>
 
@@ -41,7 +45,7 @@
         <div class="account-pages my-5 pt-5">
             <div class="container mt-5">
                 <div class="row justify-content-center">
-                    <div class="col-md-8 col-xl-5">
+                    <div class="col-md-7 col-xl-5">
                         @yield('content')      
                     </div>
                 </div>
