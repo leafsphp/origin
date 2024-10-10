@@ -2,12 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Utils\GoogleUtil;
+use App\Controllers\Controller;
+
 use App\Models\User;
 use App\Models\UserToken;
 
 use App\Helpers\MailTool;
 use Leaf\Helpers\Password;
-use App\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -68,7 +70,7 @@ class AuthController extends Controller
             if($data['user']['notify_signin']){
                 (new MailTool())->sendHtml('New Signin', view('mails.signin', [
                     'name' => $data['user']['fullname'],
-                    # TODO: 'ip' => request()->ip(),
+                    'ip' => request()->getIp(),
                     # TODO: 'location' => request()->location()
                 ]), $data['user']['email'], $data['user']['fullname']);
             }
@@ -279,6 +281,12 @@ class AuthController extends Controller
         return $this->jsonSuccess('Password updated successfully');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Auth Helper Functions
+    |--------------------------------------------------------------------------
+    */
+
     private function validateRequest($rules)
     {
         return request()->validate($rules);
@@ -304,6 +312,54 @@ class AuthController extends Controller
         return ['status' => true, 'message' => null];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Google Auth
+    |--------------------------------------------------------------------------
+    */
+
+    public function googleAuth()
+    {
+        $client = GoogleUtil::authClient();
+        $client->setRedirectUri(routeUrl('google.callback'));
+        $client->addScope("email");
+        $client->addScope("profile");
+
+        header('Location: ' . $client->createAuthUrl());
+    }
+
+    public function googleCallback()
+    {
+        try{
+            $client = GoogleUtil::authClient();
+            $client->setRedirectUri(routeUrl('google.callback'));
+
+            if (request()->params('code', 0)) {
+                $token = $client->fetchAccessTokenWithAuthCode(request()->get('code'));
+                $client->setAccessToken($token);
+
+                $service = new \Google\Service\Oauth2($client);
+                $userData = $service->userinfo->get();
+
+                $user = User::where('email', $userData->email)->first();
+
+                if (!$user) {
+                    $this->oauthData = $userData;
+                    return $this->renderPage('Register', 'auth.register');
+                }else{
+                    auth()->login(['id' => $user->id]);
+                    session()->set('session_id', md5(uniqid().time().$user->id));
+                }
+
+                return response()->redirect(route('app.home'));
+            }
+        }
+
+        catch (\Exception $e) {
+            return response()->redirect(route('login'));
+        }
+    }   
+
     public static function routes()
     {
         app()->get('/login', ['name' => 'login', 'AuthController@login']);
@@ -322,5 +378,9 @@ class AuthController extends Controller
         app()->get('/2fa/resend', ['name' => '2fa.resend', 'AuthController@resendTwoFaToken']);
 
         app()->get('/verify-email', ['name' => 'verify', 'AuthController@verify']);
+
+        # 3rd party auth
+        app()->get('/google', ['name' => 'google.auth', 'AuthController@googleAuth']);
+        app()->get('/google/callback', ['name' => 'google.callback', 'AuthController@googleCallback']);
     }
 }
