@@ -161,6 +161,15 @@ if(!function_exists('now')){
 
 }
 
+/*
+|--------------------------------------------------------------------------
+|  Active
+|--------------------------------------------------------------------------
+|
+| This function is used to check if a key is active.
+|
+*/
+
 function active($key, $value){
     return $key == $value ? 'active' : '';
 }
@@ -202,6 +211,22 @@ function urlPath($file, $engine = 'local'){
 
     return '/storage/' . trim($file, '/');
     
+}
+
+/*
+|--------------------------------------------------------------------------
+|  Recall: route with domain
+|--------------------------------------------------------------------------
+|
+| This function is used to generate a route with a domain.
+| expected return: http(s)://domain.com/route
+|
+*/
+function routeUrl($route, $params = [], $domain = null){
+    
+    is_null($domain) ? $domain = $_SERVER['HTTP_HOST'] : $domain = $domain;
+    return (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$domain" . route($route, $params);
+
 }
 
 /*
