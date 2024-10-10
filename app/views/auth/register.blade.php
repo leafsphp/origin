@@ -8,16 +8,24 @@
                 </a>
             </div>
 
-            <form action="{{ route('signup') }}" id="registerForm" class="p-2" onsubmit="submitForm(event)">
+            <form action="{{ route('signup') }}" id="registerForm" onsubmit="submitForm(event)">
+
+                @if(isset($oauthData))
+                   <div class="alert alert-danger" role="alert">
+                        User not found, Enter password to Create User
+                    </div> 
+                @endif
+
                 @csrf
                 <div class="form-group">
                     <label for="fullname">Full Name</label>
-                    <input name="name" class="form-control" type="text" id="name" placeholder="John Doe" required>
+                    <input name="name" class="form-control" type="text" id="name" placeholder="John Doe" 
+                        value="{{ !isset($oauthData) ? null : $oauthData['givenName'] .' '. $oauthData['familyName'] }}" required>
                 </div>
 
                 <div class="form-group">
                     <label for="emailaddress">Email Address</label>
-                    <input name="email" class="form-control" type="email" id="email" placeholder="johndoe@gmail.com" required>
+                    <input name="email" class="form-control" type="email" id="email" placeholder="johndoe@gmail.com" value="{{ $oauthData['email'] ?? null }}" required>
                 </div>
 
                 <div class="form-group">
@@ -28,6 +36,14 @@
                 <div class="mb-3 text-center">
                     <button class="btn btn-primary btn-block" id="btnRegister" type="submit"> Sign Up </button>
                 </div>
+
+                @if(AuthConfig('ALLOW_GOOGLE_AUTH'))
+                    <div class="mb-3 text-center">
+                        <a href="{{ route('google.auth') }}" class="btn btn-danger btn-block">
+                            Sign in with Google
+                        </a>
+                    </div>
+                @endif
             </form>
             
             <div class="row mt-2">
