@@ -287,6 +287,26 @@ return [
     | Enforce email verification before login
     |
     */
-    'ENFORCE_VERIFY_EMAIL' => true
+    'ENFORCE_VERIFY_EMAIL' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | GOOGLE AUTH
+    |--------------------------------------------------------------------------
+    |
+    | Allow google auth
+    |
+    */
+    'ALLOW_GOOGLE_AUTH' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | GOOGLE APPLICATION CREDENTIALS
+    |--------------------------------------------------------------------------
+    |
+    | Path to google application credentials
+    |
+    */
+    'GOOGLE_APPLICATION_CREDENTIALS' => StoragePath('app/credential/google.json'),
 
 ];
