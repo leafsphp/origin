@@ -42,7 +42,7 @@
 
     <body style="background: url('/assets/images/vector/gbg.jpg') center center; background-size: cover;">
 
-        <div class="account-pages my-5 pt-5">
+        <div class="account-pages my-5 pt-4">
             <div class="container mt-5">
                 <div class="row justify-content-center">
                     <div class="col-md-7 col-xl-5">
