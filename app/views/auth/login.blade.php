@@ -28,6 +28,15 @@
                 <div class="mb-3 text-center">
                     <button class="btn btn-primary btn-block" id="btnLogin" type="submit"> Sign In </button>
                 </div>
+
+                @if(AuthConfig('ALLOW_GOOGLE_AUTH'))
+                    <div class="mb-3 text-center">
+                        <a href="{{ route('google.auth') }}" class="btn btn-danger btn-block">
+                            Sign in with Google
+                        </a>
+                    </div>
+                @endif
+
             </form>
             
             @if(AuthConfig('ALLOW_REGISTRATION'))
